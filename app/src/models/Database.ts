@@ -19,7 +19,7 @@ const widgets: Widget[] = [
 ];
 
 class Database {
-  public items: unknown[] = widgets;
+  public readonly items: readonly unknown[] = widgets;
 }
 
-export default Database;
+export default new Database();
