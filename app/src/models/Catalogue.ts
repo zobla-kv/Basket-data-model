@@ -1,6 +1,6 @@
 import { Product } from './Product';
 
-class Basket<T extends Product> {
+class Catalogue<T extends Product> {
   private _products: T[];
 
   constructor(products: T[]) {
@@ -10,11 +10,6 @@ class Basket<T extends Product> {
   get products() {
     return this._products;
   }
-
-  add(product: T): T['code'] {
-    this._products.push(product);
-    return product.code;
-  }
 }
 
-export default Basket;
+export default Catalogue;
