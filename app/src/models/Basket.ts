@@ -3,6 +3,8 @@ import database from './Database';
 
 class Basket<T extends Product> {
   private _products: T[];
+  private _chargeRules = database.chargeRules;
+  private _specialOffer = database.specialOffer;
 
   constructor(products: T[]) {
     this._products = products;
@@ -27,6 +29,8 @@ class Basket<T extends Product> {
 
     price = price - this._getShippingCost(price);
 
+    price = price - this._specialOffer.getDiscount(this._products);
+
     return `$${price.toFixed(2)}`;
   }
 
@@ -36,7 +40,7 @@ class Basket<T extends Product> {
   }
 
   private _getShippingCost(total: number): number {
-    const parsedRules = Object.entries(database.chargeRules)
+    const parsedRules = Object.entries(this._chargeRules)
       .map(([key, value]) => ({
         threshold: parseInt(key.replace('$', '')),
         cost: parseFloat(value.replace('$', '')),

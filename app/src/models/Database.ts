@@ -9,6 +9,10 @@ interface IDatabase {
   chargeRules: {
     [threshold: string]: string;
   };
+  specialOffer: {
+    text: string;
+    getDiscount: (products: Product[]) => number;
+  };
 }
 
 class Database implements IDatabase {
@@ -39,12 +43,35 @@ class Database implements IDatabase {
     $90: '$0',
   };
 
+  private _specialOffer: IDatabase['specialOffer'] = {
+    text: 'buy one red widget, get the second half price',
+    getDiscount: (products: Product[]) => {
+      const redWidget = this._widgets.items.find((w) => w.code === 'R01');
+      if (!redWidget) {
+        return 0;
+      }
+
+      const redCount = products.filter((p) => p.code === 'R01').length;
+      if (redCount < 2) {
+        return 0;
+      }
+
+      const redPrice = parseFloat(redWidget.price.replace('$', ''));
+
+      return Math.floor(redPrice / 2);
+    },
+  };
+
   get widgets() {
     return this._widgets;
   }
 
   get chargeRules() {
     return this._chargeRules;
+  }
+
+  get specialOffer() {
+    return this._specialOffer;
   }
 
   private _handleAddWidget(widget: Widget): Widget['code'] {
