@@ -1,4 +1,5 @@
 import { Product } from './Product';
+import database from './Database';
 
 class Basket<T extends Product> {
   private _products: T[];
@@ -20,11 +21,35 @@ class Basket<T extends Product> {
     let price = 0;
 
     this._products.forEach((product) => {
-      const productNumericPrice = parseFloat(product.price.replace('$', ''));
-      price += productNumericPrice;
+      const productPrice = this._getNumericPrice(product.price);
+      price += productPrice;
     });
 
+    price = price - this._getShippingCost(price);
+
     return `$${price.toFixed(2)}`;
+  }
+
+  // transform '$0' -> 0
+  private _getNumericPrice(price: string): number {
+    return parseFloat(price.replace('$', ''));
+  }
+
+  private _getShippingCost(total: number): number {
+    const parsedRules = Object.entries(database.chargeRules)
+      .map(([key, value]) => ({
+        threshold: parseInt(key.replace('$', '')),
+        cost: parseFloat(value.replace('$', '')),
+      }))
+      .sort((a, b) => a.threshold - b.threshold);
+
+    for (const rule of parsedRules) {
+      if (total < rule.threshold) {
+        return rule.cost;
+      }
+    }
+
+    return parsedRules[parsedRules.length - 1].cost;
   }
 }
 

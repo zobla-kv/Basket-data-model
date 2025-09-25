@@ -6,6 +6,9 @@ interface IDatabase {
     items: Widget[];
     add: (widget: Product) => Product['code'];
   };
+  chargeRules: {
+    [threshold: string]: string;
+  };
 }
 
 class Database implements IDatabase {
@@ -30,8 +33,18 @@ class Database implements IDatabase {
     add: (widget: Product) => this._handleAddWidget(widget),
   };
 
+  private _chargeRules: IDatabase['chargeRules'] = {
+    $50: '$4.95',
+    $89: '$2.95',
+    $90: '$0',
+  };
+
   get widgets() {
     return this._widgets;
+  }
+
+  get chargeRules() {
+    return this._chargeRules;
   }
 
   private _handleAddWidget(widget: Widget): Widget['code'] {
