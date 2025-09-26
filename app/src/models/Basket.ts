@@ -4,8 +4,8 @@ import database from './Database';
 class Basket<T extends Product> {
   private _products: T[];
 
-  constructor(products: T[]) {
-    this._products = products;
+  constructor(codes: T['code'][]) {
+    this._products = database.getBasketItems(codes) as T[];
   }
 
   get products() {

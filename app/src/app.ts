@@ -1,6 +1,5 @@
 import database from './models/Database';
-import Catalogue from './models/Catalogue';
 import Basket from './models/Basket';
+import Widget from './models/Widget';
 
-const catalogue = new Catalogue(database.widgets.items);
-const basket = new Basket(catalogue.products);
+const basket = new Basket<Widget>(database.basketItems);
