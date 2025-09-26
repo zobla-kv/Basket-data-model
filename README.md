@@ -11,6 +11,10 @@ Model is built using producer and consumer concept:
 2. Shopping Basket - Consumer
    Consumer that acts as a Facade inteface for Shopping Bakset operations
 
+## Assumptions
+
+- Javascript floating point precision loss when doing calculus is not considered.
+
 ## How to run
 
 Run the following commands in order.
