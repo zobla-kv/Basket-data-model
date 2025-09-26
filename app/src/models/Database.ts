@@ -106,8 +106,8 @@ class Database implements IDatabase {
   private _getChargeRulesDiscount(total: number): number {
     const parsedRules = Object.entries(this._chargeRules.rules)
       .map(([key, value]) => ({
-        threshold: parseFloat(key.replace('$', '')),
-        cost: parseFloat(value.replace('$', '')),
+        threshold: this._getNumericPrice(key),
+        cost: this._getNumericPrice(value),
       }))
       .sort((a, b) => a.threshold - b.threshold);
 
