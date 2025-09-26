@@ -14,22 +14,14 @@ export interface SpecialOffer {
 }
 
 class Basket<T extends Product> {
-  private _products: T[];
-  private _chargeRules: ChargeRules;
-  private _specialOffer: SpecialOffer;
-
   constructor(
-    products: T['code'][],
-    chargeRules: ChargeRules,
-    specialOffer: SpecialOffer
-  ) {
-    this._products = database.getBasketItems(products) as T[];
-    this._chargeRules = chargeRules;
-    this._specialOffer = specialOffer;
-  }
+    private _products: T['code'][],
+    private _chargeRules: ChargeRules,
+    private _specialOffer: SpecialOffer
+  ) {}
 
-  get products() {
-    return this._products;
+  get products(): T[] {
+    return database.getBasketItems(this._products) as T[];
   }
 
   get chargeRules() {
@@ -41,8 +33,7 @@ class Basket<T extends Product> {
   }
 
   add(code: T['code']): T['code'] {
-    const product = database.addToBasket(code) as T;
-    this._products.push(product);
+    database.addToBasket(code);
     return code;
   }
 
