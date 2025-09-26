@@ -1,19 +1,12 @@
 import { Product } from './Product';
 import Widget from './Widget';
+import type { ChargeRules, SpecialOffer } from './Basket';
 
 interface IDatabase {
   widgets: Widget[];
   basketItems: Product['code'][];
-  chargeRules: {
-    rules: {
-      [threshold: string]: string;
-    };
-    getDeliveryFee: (total: number) => number;
-  };
-  specialOffer: {
-    text: string;
-    getDiscount: (products: Product[]) => number;
-  };
+  chargeRules: ChargeRules;
+  specialOffer: SpecialOffer;
 }
 
 class Database implements IDatabase {
