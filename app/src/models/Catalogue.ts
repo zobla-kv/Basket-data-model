@@ -1,3 +1,8 @@
+/**
+ * Unused. Left as an example of another consumer class that can use producer for other purposes.
+ *
+ */
+
 import { Product } from './Product';
 
 class Catalogue<T extends Product> {

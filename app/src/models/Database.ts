@@ -1,3 +1,23 @@
+/**
+ * =============================================================================
+ *                                D A T A B A S E
+ * =============================================================================
+ * A producer class for that is single source of truth for the app.
+ *
+ * Responsibilities:
+ *   - Stores all data.
+ *   - Provides ways for consumers to read and update the data.
+ *   - Calculates delivery fees and special offer discounts.
+ *
+ * Design Philosophy:
+ *   - Producer: Produces data for consumers to use.
+ *   - Singleton: Single instance is shared across the app.
+ *
+ * Usage:
+ *   import database from './models/Database';
+ *   console.log('widgets: ', database.widgets);
+ */
+
 import { Product } from './Product';
 import Widget from './Widget';
 import type { ChargeRules, SpecialOffer } from './Basket';

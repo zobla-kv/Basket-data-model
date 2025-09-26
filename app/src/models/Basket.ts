@@ -1,3 +1,24 @@
+/**
+ * =============================================================================
+ *                                B A S K E T
+ * =============================================================================
+ * A consumer class for managing shopping basket.
+ *
+ * Responsibilities:
+ *   - Acts as a facade interface for basket items.
+ *   - Delegates all state and calculations to the producer
+ *
+ * Design Philosophy:
+ *   - Consumer: Basket never duplicates state, always uses producer as source of truth.
+ *   - Framework-agnostic: Works with any framework, like Angular, React etc.
+ *   - Backend-agnostic: Can consume any database implementation.
+ *
+ * Usage:
+ *   const basket = new Basket<Widget>(database, database.chargeRules, database.specialOffer);
+ *   basket.add('R01');
+ *   console.log(basket.total());
+ */
+
 import { Product } from './Product';
 import database from './Database';
 
