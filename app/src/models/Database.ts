@@ -8,7 +8,7 @@ interface IDatabase {
     rules: {
       [threshold: string]: string;
     };
-    getDiscount: (total: number) => number;
+    getDeliveryFee: (total: number) => number;
   };
   specialOffer: {
     text: string;
@@ -35,7 +35,7 @@ class Database implements IDatabase {
     },
   ];
 
-  private _basketItems: IDatabase['basketItems'] = ['R01', 'G01', 'B01'];
+  private _basketItems: IDatabase['basketItems'] = ['B01', 'G01'];
 
   private _chargeRules: IDatabase['chargeRules'] = {
     rules: {
@@ -43,13 +43,14 @@ class Database implements IDatabase {
       $89: '$2.95',
       $90: '$0',
     },
-    getDiscount: (total: number) => this._getChargeRulesDiscount(total),
+    getDeliveryFee: (total: number) => this._getChargeRulesDiscount(total),
   };
 
   private _specialOffer: IDatabase['specialOffer'] = {
     text: 'buy one red widget, get the second half price',
-    getDiscount: (products: Product[]) =>
-      this._getSpecialOfferDiscount(products),
+    getDiscount: (products: Product[]) => {
+      return this._getSpecialOfferDiscount(products);
+    },
   };
 
   get widgets() {
@@ -68,9 +69,17 @@ class Database implements IDatabase {
     return this._specialOffer;
   }
 
-  addToBasket(code: Product['code']): Product['code'] {
+  getProductByCode(code: Product['code']): Product {
+    return this._widgets.find((p) => p.code === code)!;
+  }
+
+  getBasketItems(codes: Product['code'][]): Product[] {
+    return codes.map((code) => this.getProductByCode(code));
+  }
+
+  addToBasket(code: Product['code']): Product {
     this._basketItems.push(code);
-    return code;
+    return this.getProductByCode(code);
   }
 
   getBasketTotalPrice(): string {
@@ -78,7 +87,7 @@ class Database implements IDatabase {
     const products: Product[] = [];
 
     this._basketItems.forEach((code) => {
-      const product = this._getProductByCode(code);
+      const product = this.getProductByCode(code);
 
       if (!product) {
         return;
@@ -89,15 +98,11 @@ class Database implements IDatabase {
       products.push(product);
     });
 
-    price = price - this._chargeRules.getDiscount(price);
+    price = price + this._chargeRules.getDeliveryFee(price);
 
     price = price - this._specialOffer.getDiscount(products);
 
     return `$${price.toFixed(2)}`;
-  }
-
-  private _getProductByCode(code: Product['code']): Product | undefined {
-    return this._widgets.find((p) => p.code === code);
   }
 
   // transform '$0' -> 0
@@ -108,7 +113,7 @@ class Database implements IDatabase {
   private _getChargeRulesDiscount(total: number): number {
     const parsedRules = Object.entries(this._chargeRules.rules)
       .map(([key, value]) => ({
-        threshold: parseInt(key.replace('$', '')),
+        threshold: parseFloat(key.replace('$', '')),
         cost: parseFloat(value.replace('$', '')),
       }))
       .sort((a, b) => a.threshold - b.threshold);
@@ -135,7 +140,7 @@ class Database implements IDatabase {
 
     const redPrice = this._getNumericPrice(redWidget.price);
 
-    return Math.floor(redPrice / 2);
+    return redPrice / 2;
   }
 }
 
